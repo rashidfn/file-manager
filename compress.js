@@ -1,10 +1,11 @@
 import {createReadStream, createWriteStream} from "fs";
 import {createGzip, createGunzip} from 'zlib';
 import {pipeline} from 'stream';
-import {Navigation} from "./navigation.js";
+import {checkFileExists} from "./files.js";
 
 
-const makeZip = (src, dest, zip) => {
+const makeZip = async (src, dest, zip) => {
+    await checkFileExists(src);
     const readStream = createReadStream(src);
     const writeStream = createWriteStream(dest);
 
@@ -14,17 +15,16 @@ const makeZip = (src, dest, zip) => {
                 resolve();
             }
             reject();
-            Navigation.showCurrentDirectory();
         })
     })
 }
 
 export const compress = async (src, dest) => {
     const zip = createGzip();
-    return makeZip(src, dest, zip);
+    return await makeZip(src, dest, zip);
 }
 
 export const decompress = async (src, dest) => {
     const zip = createGunzip();
-    return makeZip(src, dest, zip);
+    return await makeZip(src, dest, zip);
 }
