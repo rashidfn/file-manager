@@ -32,6 +32,9 @@ export const readInput = () => {
     rl.question('Please print command\n', (data) => {
         const input = data.trim().split(' ');
         const [command, arg] = input;
+        if (command === '.exit') {
+            process.exit(0);
+        }
         if (!Operations[command]) {
             console.error('Invalid input');
             readInput();
